@@ -25,7 +25,7 @@
   "sideEffects": false,
   "scripts": {
     "build:wasm": "cd ../wasm && wasm-pack build --target bundler --out-dir ../core/wasm",
-    "build:js": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "build:js": "tsup src/index.ts --format cjs,esm --clean && tsc -p tsconfig.json",
     "build": "pnpm run build:wasm && pnpm run build:js",
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
     "test": "vitest run",
