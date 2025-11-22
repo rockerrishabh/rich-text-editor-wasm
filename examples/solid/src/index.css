@@ -1,0 +1,9 @@
+body {
+  font-family: sans-serif;
+  padding: 2rem;
+}
+
+.ProseMirror {
+  border: 1px solid #ccc;
+  padding: 1rem;
+}

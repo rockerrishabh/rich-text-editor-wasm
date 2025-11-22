@@ -1,0 +1,68 @@
+{
+  "name": "@rockerrishabh/rich-text-editor-core",
+  "version": "0.1.0",
+  "description": "Core JavaScript/TypeScript library for rich text editor with WASM",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./wasm": {
+      "types": "./wasm/rte_core.d.ts",
+      "import": "./wasm/rte_core.js"
+    }
+  },
+  "files": [
+    "dist",
+    "wasm",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build:wasm": "cd ../wasm && wasm-pack build --target bundler --out-dir ../core/wasm",
+    "build:js": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "build": "pnpm run build:wasm && pnpm run build:js",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build"
+  },
+  "keywords": [
+    "rich-text-editor",
+    "wasm",
+    "editor",
+    "contenteditable",
+    "wysiwyg"
+  ],
+  "author": "Rishabh Kumar <rishabh.6542@gmail.com> (https://github.com/rockerrishabh)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rockerrishabh/rich-text-editor.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/rockerrishabh/rich-text-editor/issues"
+  },
+  "homepage": "https://github.com/rockerrishabh/rich-text-editor#readme",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.2",
+    "vitest": "^4.0.10"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,10 @@
+body {
+  font-family: sans-serif;
+  padding: 2rem;
+}
+
+#editor-container {
+  border: 1px solid #ccc;
+  min-height: 200px;
+  padding: 1rem;
+}

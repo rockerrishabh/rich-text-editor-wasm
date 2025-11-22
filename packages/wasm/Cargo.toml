@@ -1,0 +1,37 @@
+[package]
+name = "rte-core"
+version = "0.1.0"
+edition = "2024"
+authors = ["Rishabh Kumar <rishabh.6542@gmail.com>"]
+description = "A high-performance rich text editor built with Rust and compiled to WebAssembly"
+license = "MIT"
+repository = "https://github.com/rockerrishabh/rich-text-editor-wasm"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = ["-O", "--enable-bulk-memory"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = []
+metrics = []
+
+[dependencies]
+wasm-bindgen = "0.2.105"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = { version = "1.0.145", default-features = false, features = ["alloc"] }
+js-sys = "0.3.82"
+regex = { version = "1.12.2", default-features = false, features = ["std", "unicode-perl", "unicode-case"] }
+thiserror = "2.0.17"
+console_error_panic_hook = "0.1.7"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.55"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

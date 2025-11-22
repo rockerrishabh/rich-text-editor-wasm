@@ -1,0 +1,58 @@
+# Source files
+src/
+*.ts
+*.tsx
+!*.d.ts
+
+# Build configuration
+tsconfig.json
+tsup.config.ts
+vite.config.ts
+
+# Development files
+.eslintrc*
+.prettierrc*
+
+# Tests
+**/*.test.*
+**/*.spec.*
+__tests__/
+tests/
+test/
+coverage/
+
+# Documentation (keep README)
+DEVELOPMENT.md
+CHANGELOG.draft.md
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# CI/CD
+.github/
+
+# Dependencies
+node_modules/
+
+# Temporary files
+*.log
+*.tmp
+.cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Keep these in the published package:
+# - dist/ (built files)
+# - README.md
+# - LICENSE
+# - package.json

@@ -1,0 +1,49 @@
+{
+  "name": "rich-text-editor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Rich text editor monorepo with WASM core and framework bindings",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build:wasm": "cd packages/wasm && wasm-pack build --target bundler --out-dir ../core/wasm",
+    "build:core": "cd packages/core && pnpm run build",
+    "build:react": "cd packages/react && pnpm run build",
+    "build:solid": "cd packages/solid && pnpm run build",
+    "build:svelte": "cd packages/svelte && pnpm run build",
+    "build": "pnpm run build:wasm && pnpm run build:core && pnpm run build:react && pnpm run build:solid && pnpm run build:svelte",
+    "test": "pnpm -w -r run test --if-present",
+    "lint": "pnpm -w -r run lint --if-present",
+    "typecheck": "pnpm -w -r run typecheck --if-present",
+    "clean": "rm -rf packages/*/dist packages/core/wasm packages/*/node_modules node_modules"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^5.1.0",
+    "vite-plugin-solid": "^2.11.10",
+    "@sveltejs/vite-plugin-svelte": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=16",
+    "npm": ">=8"
+  },
+  "keywords": [
+    "wasm",
+    "webassembly",
+    "rust",
+    "editor",
+    "rich-text",
+    "text-editor"
+  ],
+  "author": "Rishabh Kumar <rishabh.6542@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rockerrishabh/rich-text-editor-wasm"
+  },
+  "bugs": {
+    "url": "https://github.com/rockerrishabh/rich-text-editor-wasm/issues"
+  },
+  "homepage": "https://github.com/rockerrishabh/rich-text-editor-wasm#readme"
+}

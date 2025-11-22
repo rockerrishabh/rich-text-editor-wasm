@@ -1,0 +1,71 @@
+# This file is for the ROOT package only
+# Individual packages have their own .npmignore files
+
+# Source code (not needed in root npm package)
+src/
+packages/
+
+# Build scripts and tools
+*.sh
+*.ps1
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Development documentation
+.kiro/
+DEVELOPMENT.md
+IMPLEMENTATION_TASK.md
+SETUP_COMPLETE.md
+SIZE_OPTIMIZATION.md
+*.draft.md
+
+# Test files
+tests/
+test/
+**/*.test.*
+**/*.spec.*
+__tests__/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+azure-pipelines.yml
+
+# Linting and formatting
+.eslintrc*
+.prettierrc*
+.editorconfig
+
+# TypeScript config (keep in packages, not root)
+tsconfig*.json
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Logs
+*.log
+
+# Environment files
+.env*

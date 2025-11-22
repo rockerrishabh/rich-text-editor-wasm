@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "rootDirs": ["."],
+    "paths": {
+      "@rockerrishabh/rich-text-editor-core": [
+        "../core/dist/index.d.ts"
+      ]
+    },
+    "emitDeclarationOnly": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
