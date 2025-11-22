@@ -49,17 +49,17 @@
   "homepage": "https://github.com/rockerrishabh/rich-text-editor-wasm#readme",
   "peerDependencies": {
     "@rockerrishabh/rich-text-editor-core": "^0.1.0",
-    "solid-js": "^1.8.0"
+    "solid-js": ">=1.8.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@rockerrishabh/rich-text-editor-core": "workspace:*",
-    "eslint": "^8.39.1",
+    "eslint": "^9.39.1",
     "solid-js": "^1.9.10",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0",
-    "vitest": "^4.0.10"
+    "vitest": "^4.0.13"
   },
   "engines": {
     "node": ">=16"
