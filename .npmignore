@@ -29,6 +29,7 @@ IMPLEMENTATION_TASK.md
 SETUP_COMPLETE.md
 SIZE_OPTIMIZATION.md
 *.draft.md
+.qodo/
 
 # Test files
 tests/

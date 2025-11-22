@@ -188,4 +188,4 @@ jobs:
           prerelease: false
           name: ${{ needs.detect-package.outputs.package }} v${{ needs.detect-package.outputs.version }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}

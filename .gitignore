@@ -57,6 +57,8 @@ playwright/.cache/
 # Development artifacts
 .kiro/
 .github/copilot-instructions.md
+.vscode/
+.qodo/
 
 # Demo/examples build
 www/dist/
