@@ -22,6 +22,7 @@
     "README.md",
     "LICENSE"
   ],
+  "sideEffects": false,
   "scripts": {
     "build:wasm": "cd ../wasm && wasm-pack build --target bundler --out-dir ../core/wasm",
     "build:js": "tsup src/index.ts --format cjs,esm --dts --clean",
@@ -44,13 +45,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rockerrishabh/rich-text-editor.git",
+    "url": "git+https://github.com/rockerrishabh/rich-text-editor-wasm.git",
     "directory": "packages/core"
   },
   "bugs": {
-    "url": "https://github.com/rockerrishabh/rich-text-editor/issues"
+    "url": "https://github.com/rockerrishabh/rich-text-editor-wasm/issues"
   },
-  "homepage": "https://github.com/rockerrishabh/rich-text-editor#readme",
+  "homepage": "https://github.com/rockerrishabh/rich-text-editor-wasm#readme",
   "devDependencies": {
     "@types/node": "^24.10.1",
     "eslint": "^9.39.1",

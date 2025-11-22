@@ -19,6 +19,7 @@
     "README.md",
     "LICENSE"
   ],
+  "sideEffects": false,
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --clean --external svelte && tsc -p tsconfig.json",
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch --external svelte",
@@ -39,13 +40,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rockerrishabh/rich-text-editor.git",
+    "url": "git+https://github.com/rockerrishabh/rich-text-editor-wasm.git",
     "directory": "packages/svelte"
   },
   "bugs": {
-    "url": "https://github.com/rockerrishabh/rich-text-editor/issues"
+    "url": "https://github.com/rockerrishabh/rich-text-editor-wasm/issues"
   },
-  "homepage": "https://github.com/rockerrishabh/rich-text-editor#readme",
+  "homepage": "https://github.com/rockerrishabh/rich-text-editor-wasm#readme",
   "peerDependencies": {
     "@rockerrishabh/rich-text-editor-core": "^0.1.0",
     "svelte": "^4.0.0 || ^5.0.0"

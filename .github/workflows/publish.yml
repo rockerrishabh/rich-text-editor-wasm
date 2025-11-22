@@ -3,14 +3,14 @@ name: Publish to NPM
 on:
   push:
     tags:
-      - 'core-v*.*.*'
-      - 'react-v*.*.*'
-      - 'solid-v*.*.*'
-      - 'svelte-v*.*.*'
+      - "core-v*"
+      - "react-v*"
+      - "solid-v*"
+      - "svelte-v*"
   workflow_dispatch:
     inputs:
       package:
-        description: 'Package to publish'
+        description: "Package to publish"
         required: true
         type: choice
         options:
@@ -18,6 +18,14 @@ on:
           - react
           - solid
           - svelte
+      version_type:
+        description: "Version bump type (if no tag)"
+        required: false
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 jobs:
   detect-package:
@@ -25,6 +33,7 @@ jobs:
     outputs:
       package: ${{ steps.detect.outputs.package }}
       version: ${{ steps.detect.outputs.version }}
+      is_prerelease: ${{ steps.detect.outputs.is_prerelease }}
     steps:
       - name: Detect package from tag
         id: detect
@@ -32,10 +41,19 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "package=${{ github.event.inputs.package }}" >> $GITHUB_OUTPUT
             echo "version=manual" >> $GITHUB_OUTPUT
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
           else
             TAG="${GITHUB_REF#refs/tags/}"
             echo "Tag: $TAG"
             
+            # Detect prerelease (beta, alpha, rc, etc.)
+            if [[ $TAG =~ -(alpha|beta|rc|preview|next) ]]; then
+              echo "is_prerelease=true" >> $GITHUB_OUTPUT
+            else
+              echo "is_prerelease=false" >> $GITHUB_OUTPUT
+            fi
+            
+            # Extract package name and version
             if [[ $TAG == core-v* ]]; then
               echo "package=core" >> $GITHUB_OUTPUT
               echo "version=${TAG#core-v}" >> $GITHUB_OUTPUT
@@ -57,7 +75,7 @@ jobs:
   test-and-build:
     needs: detect-package
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -70,12 +88,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22'
-          cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "22"
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
 
-      - name: Add wasm32 target
-        run: rustup target add wasm32-unknown-unknown
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
 
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
@@ -88,6 +109,8 @@ jobs:
             ~/.cargo/git
             packages/wasm/target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -103,6 +126,15 @@ jobs:
 
       - name: Typecheck all packages
         run: pnpm run typecheck
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-${{ needs.detect-package.outputs.package }}
+          path: |
+            packages/${{ needs.detect-package.outputs.package }}/dist
+            packages/core/wasm
+          retention-days: 7
 
   publish:
     needs: [detect-package, test-and-build]
@@ -125,13 +157,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '22'
-          cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "22"
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
           always-auth: true
 
-      - name: Add wasm32 target
-        run: rustup target add wasm32-unknown-unknown
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
 
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
@@ -144,6 +179,8 @@ jobs:
             ~/.cargo/git
             packages/wasm/target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -151,9 +188,13 @@ jobs:
       - name: Build all packages
         run: pnpm run build
 
-      # -------------------------
-      # Check if package@version exists
-      # -------------------------
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts-${{ needs.detect-package.outputs.package }}
+          path: packages/${{ needs.detect-package.outputs.package }}
+
+      # Check if package@version already exists
       - id: check_package
         name: Check if package already published
         working-directory: ./packages/${{ needs.detect-package.outputs.package }}
@@ -169,23 +210,57 @@ jobs:
             echo "Package ${NAME}@${VERSION} not found in registry"
           fi
 
-      # -------------------------
+      # Dry-run publish to validate
+      - name: Dry-run publish
+        if: steps.check_package.outputs.published == 'false'
+        run: pnpm publish --dry-run --no-git-checks
+        working-directory: ./packages/${{ needs.detect-package.outputs.package }}
+
       # Publish the specific package
-      # -------------------------
       - name: Publish ${{ needs.detect-package.outputs.package }} package
         if: steps.check_package.outputs.published == 'false'
-        run: pnpm publish --access public --no-git-checks
+        run: |
+          TAG_FLAG=""
+          if [[ "${{ needs.detect-package.outputs.is_prerelease }}" == "true" ]]; then
+            TAG_FLAG="--tag next"
+          fi
+          pnpm publish --access public --no-git-checks $TAG_FLAG
         working-directory: ./packages/${{ needs.detect-package.outputs.package }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Get package info
+        id: pkg_info
+        working-directory: ./packages/${{ needs.detect-package.outputs.package }}
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/') && steps.check_package.outputs.published == 'false'
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           generate_release_notes: true
           draft: false
-          prerelease: false
+          prerelease: ${{ needs.detect-package.outputs.is_prerelease == 'true' }}
           name: ${{ needs.detect-package.outputs.package }} v${{ needs.detect-package.outputs.version }}
+          body: |
+            ## 📦 Package Information
+
+            **Package:** `${{ steps.pkg_info.outputs.name }}`
+            **Version:** `${{ steps.pkg_info.outputs.version }}`
+            **NPM:** https://www.npmjs.com/package/${{ steps.pkg_info.outputs.name }}/v/${{ steps.pkg_info.outputs.version }}
+
+            ## 🚀 Installation
+
+            ```bash
+            npm install ${{ steps.pkg_info.outputs.name }}@${{ steps.pkg_info.outputs.version }}
+            # or
+            pnpm add ${{ steps.pkg_info.outputs.name }}@${{ steps.pkg_info.outputs.version }}
+            # or
+            yarn add ${{ steps.pkg_info.outputs.name }}@${{ steps.pkg_info.outputs.version }}
+            ```
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

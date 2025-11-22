@@ -1,5 +1,13 @@
 packages:
-  - packages/*
+  - 'packages/*'
+  - 'examples/*'
 
+# Only build these dependencies from source
 onlyBuiltDependencies:
   - esbuild
+
+# Shared dependencies configuration
+shared-workspace-lockfile: true
+
+# Enable strict peer dependencies
+strict-peer-dependencies: false

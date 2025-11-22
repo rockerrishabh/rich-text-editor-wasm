@@ -13,10 +13,23 @@
     "build:solid": "cd packages/solid && pnpm run build",
     "build:svelte": "cd packages/svelte && pnpm run build",
     "build": "pnpm run build:wasm && pnpm run build:core && pnpm run build:react && pnpm run build:solid && pnpm run build:svelte",
-    "test": "pnpm -w -r run test --if-present",
-    "lint": "pnpm -w -r run lint --if-present",
-    "typecheck": "pnpm -w -r run typecheck --if-present",
-    "clean": "rm -rf packages/*/dist packages/core/wasm packages/*/node_modules node_modules"
+    "build:all": "pnpm -r --filter './packages/*' run build",
+    "dev": "pnpm -r --parallel --filter './packages/{core,react,solid,svelte}' run dev",
+    "test": "pnpm -r run test --if-present",
+    "test:watch": "pnpm -r --parallel run test:watch --if-present",
+    "lint": "pnpm -r run lint --if-present",
+    "lint:fix": "pnpm -r run lint --if-present -- --fix",
+    "typecheck": "pnpm -r run typecheck --if-present",
+    "clean": "pnpm -r exec rm -rf dist node_modules && rm -rf node_modules packages/core/wasm",
+    "clean:dist": "pnpm -r exec rm -rf dist && rm -rf packages/core/wasm",
+    "version:check": "node scripts/version-manager.js check",
+    "version:patch": "node scripts/version-manager.js bump patch",
+    "version:minor": "node scripts/version-manager.js bump minor",
+    "version:major": "node scripts/version-manager.js bump major",
+    "publish:dry-run": "node scripts/publish-helper.js dry-run",
+    "publish:check": "node scripts/publish-helper.js check",
+    "release:prepare": "pnpm run clean:dist && pnpm run build && pnpm run test && pnpm run typecheck",
+    "release:tag": "node scripts/version-manager.js tag"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
@@ -26,7 +39,7 @@
   },
   "engines": {
     "node": ">=16",
-    "npm": ">=8"
+    "pnpm": ">=8"
   },
   "keywords": [
     "wasm",
@@ -34,7 +47,8 @@
     "rust",
     "editor",
     "rich-text",
-    "text-editor"
+    "text-editor",
+    "monorepo"
   ],
   "author": "Rishabh Kumar <rishabh.6542@gmail.com>",
   "license": "MIT",
