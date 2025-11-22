@@ -1,13 +1,13 @@
 packages:
-  - 'packages/*'
-  - 'examples/*'
+  - packages/*
+  - examples/*
 
-# Only build these dependencies from source
 onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
   - esbuild
+  - svelte-preprocess
 
-# Shared dependencies configuration
 shared-workspace-lockfile: true
 
-# Enable strict peer dependencies
 strict-peer-dependencies: false
