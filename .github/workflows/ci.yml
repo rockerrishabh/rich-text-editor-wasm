@@ -58,12 +58,6 @@ jobs:
           node-version: "22"
           cache: "pnpm"
 
-      - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
@@ -108,12 +102,6 @@ jobs:
         with:
           node-version: "22"
           cache: "pnpm"
-
-      - name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
 
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
