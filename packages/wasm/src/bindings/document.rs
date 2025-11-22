@@ -1423,62 +1423,7 @@ impl WasmDocument {
         obj.into()
     }
 
-    /// Explicitly frees the memory used by this document
-    ///
-    /// This method allows JavaScript code to immediately reclaim the memory
-    /// used by the document instead of waiting for garbage collection.
-    ///
-    /// # Safety
-    ///
-    /// After calling `free()`, the document instance is invalid and must not
-    /// be used. Any further method calls will result in undefined behavior.
-    ///
-    /// # Memory Reclaimed
-    ///
-    /// Calling `free()` will immediately release:
-    /// - Text storage buffers (~4 bytes per character)
-    /// - Format storage structures (~32 bytes per format run)
-    /// - Command history (~6.4KB + text data for 100 commands)
-    /// - Event callback references (~8 bytes per callback)
-    /// - All internal data structures (~1KB base overhead)
-    ///
-    /// For a typical 10,000 character document with 50 format runs and 100 commands:
-    /// - Total memory freed: ~49KB
-    ///
-    /// # Example
-    ///
-    /// ```javascript
-    /// const doc = new WasmDocument();
-    /// doc.insertText("Hello", 0);
-    /// console.log(doc.getContent()); // "Hello"
-    ///
-    /// // When done with the document
-    /// doc.free();
-    ///
-    /// // doc is now invalid - do not use it!
-    /// // doc.getContent(); // ERROR: use after free
-    /// ```
-    ///
-    /// # When to Use
-    ///
-    /// - When working with temporary documents that are no longer needed
-    /// - When creating many document instances in a loop
-    /// - When memory pressure is a concern (especially on mobile)
-    /// - Before replacing a document with a new instance
-    /// - In server-side rendering to prevent memory leaks
-    ///
-    /// # When NOT to Use
-    ///
-    /// - For long-lived documents (let GC handle it)
-    /// - If you're not sure the document won't be used again
-    /// - In most normal use cases (GC is sufficient)
-    ///
-    /// See MEMORY.md for detailed memory management guidelines.
-    pub fn free(self) {
-        // The Drop implementation will handle cleanup
-        // This method consumes self, preventing further use
-        drop(self);
-    }
+
 }
 
 // Implement Drop trait for automatic cleanup
