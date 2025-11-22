@@ -19,8 +19,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --clean --external solid-js && tsc -p tsconfig.json",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch --external solid-js",
+    "build": "tsup && tsc -p tsconfig.json",
+    "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src",

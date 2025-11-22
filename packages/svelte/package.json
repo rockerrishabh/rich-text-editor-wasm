@@ -21,8 +21,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --clean --external svelte && tsc -p tsconfig.json",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch --external svelte",
+    "build": "tsup && tsc -p tsconfig.json",
+    "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint src",
