@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@rockerrishabh/rich-text-editor-core": "^0.1.0",
-    "@rockerrishabh/rich-text-editor-react": "^0.2.4",
+    "@rockerrishabh/rich-text-editor-core": "workspace:*",
+    "@rockerrishabh/rich-text-editor-react": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
